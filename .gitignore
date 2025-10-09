@@ -1,0 +1,58 @@
+# ===== Common =====
+*.log
+*.log.*
+*.db
+*.db-shm
+*.db-wal
+*.pid
+*.pyc
+__pycache__/
+
+# ===== Home Assistant =====
+homeassistant/home-assistant_v2.db
+homeassistant/deps/
+homeassistant/home-assistant.log*
+homeassistant/tts/
+homeassistant/.storage/
+homeassistant/.cloud/
+homeassistant/.ios.conf
+homeassistant/.HA_VERSION
+homeassistant/.uuid
+homeassistant/secrets.yaml
+# 自動生成バックアップなど
+homeassistant/.translations/
+homeassistant/.storage/
+homeassistant/secrets.yaml
+homeassistant/.ha_run.lock
+# ===== Mosquitto =====
+mosquitto/data/
+mosquitto/log/
+mosquitto/passwd
+mosquitto/config/passwd
+
+# ===== InfluxDB =====
+influxdb/env.list
+influxdb/data/
+influxdb/meta/
+influxdb/wal/
+
+# ===== Telegraf =====
+telegraf/*.log
+# （telegraf.conf は残す）
+
+# ===== Docker / Compose =====
+*.env
+.env*
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ===== Editor/OS temporary =====
+.vscode/
+.idea/
+*.iml
+*.tmp
+*~
+
