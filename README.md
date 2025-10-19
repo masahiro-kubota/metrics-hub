@@ -1,22 +1,46 @@
-概要
+# metrics-hub
 
-HA が各デバイスの統合・認証・更新を肩代わり
+Home Assistant + MQTT + Telegraf + InfluxDB + Grafana を使った統合監視システム
 
-HA から MQTT に状態配信 → Telegraf で購読
+## 概要
 
-メリット
+- **Home Assistant**: デバイスの統合・認証・更新を担当
+- **MQTT (Mosquitto)**: HAから状態をパブリッシュ
+- **Telegraf**: MQTTメッセージを購読してInfluxDBに送信
+- **InfluxDB**: 時系列データの保存
+- **Grafana**: データの可視化・ダッシュボード
 
-認証・多デバイス連携を HA に丸投げできて楽
+## クイックスタート
 
-設定が宣言的になり、追加デバイスの横展開が早い
+```bash
+git clone <このリポジトリ>
+cd metrics-hub
+./setup.sh
+```
 
-MQTT は疎結合で拡張しやすい（他の処理もぶら下げやすい）
+## アクセス情報
 
-デメリット
+- **Grafana**: http://localhost:3000 (admin/admin)
+- **InfluxDB**: http://localhost:8086
+- **Home Assistant**: http://localhost:8123
 
-HA＋MQTT＋Telegraf とコンポーネントが増える
+## MQTTテスト
 
-MQTT のトピック設計（命名/単位/retained）にひと工夫必要
+```bash
+# メッセージ送信テスト
+docker exec mosquitto mosquitto_pub -h localhost -u hauser -P hapass -t 'ha/sensors/test/state' -m '{"temperature":22.5,"humidity":65}'
+```
+
+## メリット
+
+- 認証・多デバイス連携をHAに丸投げできて楽
+- 設定が宣言的になり、追加デバイスの横展開が早い  
+- MQTTは疎結合で拡張しやすい
+
+## デメリット
+
+- コンポーネントが増える
+- MQTTのトピック設計（命名/単位/retained）にひと工夫必要
 
 ```
 [SwitchBot/各デバイス/Health系連携] → [Home Assistant]

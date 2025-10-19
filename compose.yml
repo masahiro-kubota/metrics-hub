@@ -15,11 +15,12 @@ services:
       - "1883:1883"
       - "9001:9001"       # WebSocket（必要なら）
     volumes:
-      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
-      - ./mosquitto/config/passwd:/mosquitto/config/passwd:ro
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config/passwd:/mosquitto/config/passwd
       - mosqdata:/mosquitto/data
       - mosqlog:/mosquitto/log
     restart: unless-stopped
+    networks: [obsnet]
 
   influxdb:
     image: influxdb:2
@@ -30,7 +31,15 @@ services:
       - influxdata:/var/lib/influxdb2
     env_file:
       - ./influxdb/env.list  # 初回セットアップ済みのTOKEN/ORG/BUCKETを入れても良い
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=mybucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=mytoken
     restart: unless-stopped
+    networks: [obsnet]
 
   telegraf:
     image: telegraf:1.30
@@ -40,16 +49,25 @@ services:
       - influxdb
     volumes:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    environment:
+      - INFLUX_TOKEN=mytoken
+      - INFLUX_ORG=myorg
+      - INFLUX_BUCKET=mybucket
     restart: unless-stopped
+    networks: [obsnet]
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - grafanadata:/var/lib/grafana
     restart: unless-stopped
+    networks: [obsnet]
 
 volumes:
   mosqdata:
@@ -57,3 +75,5 @@ volumes:
   influxdata:
   grafanadata:
 
+networks:
+  obsnet:

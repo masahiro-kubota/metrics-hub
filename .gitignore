@@ -27,7 +27,6 @@ homeassistant/.ha_run.lock
 # ===== Mosquitto =====
 mosquitto/data/
 mosquitto/log/
-mosquitto/passwd
 mosquitto/config/passwd
 
 # ===== InfluxDB =====
@@ -48,6 +47,9 @@ telegraf/*.log
 *.swo
 .DS_Store
 Thumbs.db
+
+# ===== Mosquitto =====
+mosquitto/config/passwd
 
 # ===== Editor/OS temporary =====
 .vscode/
