@@ -22,6 +22,21 @@ services:
     restart: unless-stopped
     networks: [obsnet]
 
+  memory-publisher:
+    build: ./memory-publisher
+    container_name: memory-publisher
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_USERNAME=hauser
+      - MQTT_PASSWORD=hapass
+      - MQTT_TOPIC=system/memory/usage
+      - PUBLISH_INTERVAL=10
+    restart: unless-stopped
+    networks: [obsnet]
+
   influxdb:
     image: influxdb:2
     container_name: influxdb
