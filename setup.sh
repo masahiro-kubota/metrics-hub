@@ -28,7 +28,7 @@ if [ ! -f "./influxdb/env.list" ]; then
     else
         echo "⚠️  example.env.list が見つかりません。空の env.list を作成します"
         touch "./influxdb/env.list"
-    fi
+    dfdfdfdf
 elsedfdfdf
     echo "ℹ️  env.list ファイルは既に存在します"
 fi
