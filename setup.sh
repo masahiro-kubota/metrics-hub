@@ -18,7 +18,7 @@ if [ ! -f "./mosquitto/config/passwd" ]; then
 else
     echo "ℹ️  パスワードファイルは既に存在します"
 fi
-
+dfdfdfd
 # 2. InfluxDB 環境設定ファイルのコピー
 echo "🗂️  InfluxDB 環境設定ファイルを準備中..."
 if [ ! -f "./influxdb/env.list" ]; then
@@ -29,7 +29,7 @@ if [ ! -f "./influxdb/env.list" ]; then
         echo "⚠️  example.env.list が見つかりません。空の env.list を作成します"
         touch "./influxdb/env.list"
     fi
-else
+elsedfdfdf
     echo "ℹ️  env.list ファイルは既に存在します"
 fi
 
