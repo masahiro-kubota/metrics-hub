@@ -48,3 +48,16 @@
       target:
         entity_id: switch.raito
   mode: single
+
+- id: seikatsu_nag_midnight_reset
+  alias: 生活リマインダー 深夜リセット
+  description: 古い未完了状態を翌日に持ち越さない
+  triggers:
+    - trigger: time
+      at: "00:00:00"
+  conditions: []
+  actions:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.seikatsu_nag_active
+  mode: single
