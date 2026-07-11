@@ -9,3 +9,8 @@ frontend:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+input_boolean:
+  seikatsu_nag_active:
+    name: 生活リマインダー作動中
+    icon: mdi:lightbulb-alert

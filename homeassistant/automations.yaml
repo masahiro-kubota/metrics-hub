@@ -1,1 +1,50 @@
-[]
+- id: seikatsu_nag_status
+  alias: 生活リマインダー状態更新
+  description: GitHub Actionsから未完了状態を受け取る
+  triggers:
+    - trigger: webhook
+      webhook_id: !secret seikatsu_nag_webhook_id
+      allowed_methods:
+        - POST
+      local_only: false
+  conditions: []
+  actions:
+    - choose:
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.json.test | default(false) | bool }}"
+          sequence:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.raito
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.json.incomplete | default(false) | bool }}"
+          sequence:
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.seikatsu_nag_active
+      default:
+        - action: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.seikatsu_nag_active
+  mode: restart
+
+- id: seikatsu_nag_blink
+  alias: 生活リマインダー ライト強制消灯
+  description: 未完了中は15秒ごとにライトへ消灯命令を送る
+  triggers:
+    - trigger: time_pattern
+      seconds: "/15"
+  conditions:
+    - condition: state
+      entity_id: input_boolean.seikatsu_nag_active
+      state: "on"
+    - condition: time
+      after: "19:00:00"
+      before: "23:59:59"
+  actions:
+    - action: switch.turn_off
+      target:
+        entity_id: switch.raito
+  mode: single
