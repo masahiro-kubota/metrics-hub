@@ -9,6 +9,11 @@
       local_only: false
   conditions: []
   actions:
+    - action: input_text.set_value
+      target:
+        entity_id: input_text.seikatsu_nag_status
+      data:
+        value: "{{ trigger.json.status_text | default('(不明)') }}"
     - choose:
         - conditions:
             - condition: template
@@ -25,6 +30,17 @@
               target:
                 entity_id: input_boolean.seikatsu_nag_active
       default:
+        # 催促中(作動中フラグON)から完了に切り替わった瞬間だけライトを点ける。
+        # switch.raito は状態フィードバックが無い(常にunknown)ため、切替判定はフラグで行う。
+        # これで完了状態が続く5分毎の再点灯・ビープ連発を防ぐ。
+        - if:
+            - condition: state
+              entity_id: input_boolean.seikatsu_nag_active
+              state: "on"
+          then:
+            - action: switch.turn_on
+              target:
+                entity_id: switch.raito
         - action: input_boolean.turn_off
           target:
             entity_id: input_boolean.seikatsu_nag_active

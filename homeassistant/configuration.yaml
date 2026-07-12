@@ -14,3 +14,9 @@ input_boolean:
   seikatsu_nag_active:
     name: 生活リマインダー作動中
     icon: mdi:lightbulb-alert
+
+input_text:
+  seikatsu_nag_status:
+    name: 生活リマインダー判定
+    icon: mdi:clipboard-text-clock
+    max: 255
