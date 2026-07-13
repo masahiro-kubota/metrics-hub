@@ -1,0 +1,77 @@
+block_start_nag:
+  alias: "\U0001F3AF ブロック開始nag"
+  mode: parallel
+  max: 10
+  fields:
+    title:
+      description: ブロック名
+    ends:
+      description: 終了ISO時刻
+    grace_s:
+      description: エスカレーション間隔秒(既定90)
+  sequence:
+  - variables:
+      title: "{{ title | default('\U0001F3AF ブロック') }}"
+      ends: '{{ ends | default((now()+timedelta(hours=1)).isoformat()) }}'
+      grace_s: '{{ grace_s | default(90) }}'
+  - data:
+      title: ▶️ {{ title }}
+      message: 始めたら「始めた」を押して。押すまで小突く。
+      data:
+        tag: blocknag-{{ title }}
+        importance: high
+        priority: high
+        ttl: 0
+        persistent: true
+        sticky: true
+        actions:
+        - action: BLOCK_STARTED
+          title: 始めた
+    action: notify.mobile_app_sc_51f
+  - repeat:
+      sequence:
+      - wait_for_trigger:
+        - platform: event
+          event_type: mobile_app_notification_action
+          event_data:
+            action: BLOCK_STARTED
+        timeout: '{{ grace_s }}'
+        continue_on_timeout: true
+      - choose:
+        - conditions: '{{ wait.trigger is not none }}'
+          sequence:
+          - target:
+              entity_id: switch.raito
+            action: switch.turn_on
+          - data:
+              message: clear_notification
+              data:
+                tag: blocknag-{{ title }}
+            action: notify.mobile_app_sc_51f
+        default:
+        - target:
+            entity_id: switch.raito
+          action: switch.turn_off
+        - data:
+            title: ⏰ {{ title }} まだ始めてない
+            message: 始めるまで消す。 {{ now().strftime('%H:%M:%S') }}
+            data:
+              tag: blocknag-{{ title }}
+              importance: high
+              priority: high
+              ttl: 0
+              persistent: true
+              sticky: true
+              actions:
+              - action: BLOCK_STARTED
+                title: 始めた
+          action: notify.mobile_app_sc_51f
+      until:
+      - condition: template
+        value_template: '{{ wait.trigger is not none or now() > as_datetime(ends)
+          }}'
+  - data:
+      message: clear_notification
+      data:
+        tag: blocknag-{{ title }}
+    action: notify.mobile_app_sc_51f
