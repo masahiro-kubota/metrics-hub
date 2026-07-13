@@ -48,3 +48,8 @@ docker exec mosquitto mosquitto_pub -h localhost -u hauser -P hapass -t 'ha/sens
                                      [MQTT Broker] → [Telegraf mqtt_consumer]
                                                      → [InfluxDB] → [Grafana]
 ```
+
+> **⚠️ このリポジトリはアーカイブ済み（2026-07）**
+> 実際に使われていたのはHome Assistantだけだったため、HA一式は
+> [seikatsu-bot](https://github.com/masahiro-kubota/seikatsu-bot) の `ha/` へ移管した。
+> Grafana/InfluxDB/Telegraf/Mosquittoは未使用のまま停止。
